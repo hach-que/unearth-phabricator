@@ -5,6 +5,10 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
 
   private $disableFullScreen = false;
 
+  private $disableHelp = false;
+
+  private $disableDirectUpload = false;
+
   public function setDisableMacros($disable) {
     $this->disableMacro = $disable;
     return $this;
@@ -12,6 +16,16 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
 
   public function setDisableFullScreen($disable) {
     $this->disableFullScreen = $disable;
+    return $this;
+  }
+
+  public function setDisableHelp($disable) {
+    $this->disableHelp = $disable;
+    return $this;
+  }
+
+  public function setDisableDirectUpload($disable) {
+    $this->disableDirectUpload = $disable;
     return $this;
   }
 
@@ -83,10 +97,13 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
       'fa-table' => array(
         'tip' => pht('Table'),
       ),
-      'fa-cloud-upload' => array(
-        'tip' => pht('Upload File'),
-      ),
     );
+
+    if (!$this->disableDirectUpload) {
+      $actions['fa-cloud-upload'] = array(
+        'tip' => pht('Upload File'),
+      );
+    }
 
     $can_use_macros =
       (!$this->disableMacro) &&
@@ -107,11 +124,13 @@ final class PhabricatorRemarkupControl extends AphrontFormTextAreaControl {
       );
     }
 
-    $actions['fa-life-bouy'] = array(
-        'tip' => pht('Help'),
-        'align' => 'right',
-        'href'  => PhabricatorEnv::getDoclink('Remarkup Reference'),
-      );
+    if (!$this->disableHelp) {
+      $actions['fa-life-bouy'] = array(
+          'tip' => pht('Help'),
+          'align' => 'right',
+          'href'  => PhabricatorEnv::getDoclink('Remarkup Reference'),
+        );
+    }
 
     if (!$this->disableFullScreen) {
       $actions[] = array(
